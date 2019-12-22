@@ -1,6 +1,7 @@
 import pytest
 from django.conf import settings
-from django.test import RequestFactory
+from django.urls import reverse
+from django.test import RequestFactory, Client
 
 from rsscraper.users.views import UserRedirectView, UserUpdateView
 
@@ -25,7 +26,7 @@ class TestUserUpdateView:
 
         view.request = request
 
-        assert view.get_success_url() == f"/users/{user.username}/"
+        assert view.get_success_url() == "/users/"
 
     def test_get_object(
         self, user: settings.AUTH_USER_MODEL, request_factory: RequestFactory
@@ -38,6 +39,15 @@ class TestUserUpdateView:
 
         assert view.get_object() == user
 
+    def test_get_user_detail(self, user: settings.AUTH_USER_MODEL):
+        client = Client()
+
+        client.force_login(user)
+        response = client.get(
+            reverse('users:detail'))
+
+        assert response.status_code == 200
+
 
 class TestUserRedirectView:
     def test_get_redirect_url(
@@ -49,4 +59,4 @@ class TestUserRedirectView:
 
         view.request = request
 
-        assert view.get_redirect_url() == f"/users/{user.username}/"
+        assert view.get_redirect_url() == "/users/"
