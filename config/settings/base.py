@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "rsscraper.users.apps.UsersConfig",
+    'rsscraper.feeds'
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
