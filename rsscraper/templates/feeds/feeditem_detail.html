@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{% if object.title %}{{ object.title }}{% else %}{{ object.url }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="row">
+    <div class="col-sm-12">
+      <p>Get back to <a href="{{ object.feed.get_absolute_url }}">{% if object.feed.title %}{{ object.feed.title }} - {% endif %}{{ object.feed.url }}</a></p>
+      <hr>
+      <h2><a href="{{ object.permalink }}">{% if object.title %}{{ object.title }} - {% endif %}{{ object.permalink }}</a></h2>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-sm-12 border">
+      {{ object.content|safe }}
+    </div>
+  </div>
+
+
+</div>
+{% endblock content %}

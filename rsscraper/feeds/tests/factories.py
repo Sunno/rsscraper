@@ -7,6 +7,10 @@ from rsscraper.users.tests.factories import UserFactory
 class FeedItemFactory(DjangoModelFactory):
     permalink = Faker('url')
     title = Faker('sentence')
+    author = Faker('name')
+    summary = Faker('paragraph')
+    content = Faker('text')
+    permalink = Faker('url')
 
     class Meta:
         model = FeedItem
