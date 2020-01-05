@@ -53,6 +53,9 @@ class Feed(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("feeds:detail", kwargs={'pk': self.pk})
 
+    def __str__(self):
+        return f'{self.user} - {self.title or self.url}'
+
 
 class FeedItem(TimeStampedModel):
     feed = models.ForeignKey(
