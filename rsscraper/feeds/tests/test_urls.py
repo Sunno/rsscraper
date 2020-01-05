@@ -15,6 +15,14 @@ def test_feed_detail():
     assert resolve(f'/feeds/{feed.pk}/').view_name == "feeds:detail"
 
 
+def test_feed_delete():
+    feed = FeedFactory()
+    assert reverse(
+        'feeds:delete', kwargs={'pk': feed.pk}) == f'/feeds/{feed.pk}/delete/'
+
+    assert resolve(f'/feeds/{feed.pk}/delete/').view_name == "feeds:delete"
+
+
 def test_feed_item_detail():
     feed = FeedFactory()
     item = FeedItemFactory(feed=feed)

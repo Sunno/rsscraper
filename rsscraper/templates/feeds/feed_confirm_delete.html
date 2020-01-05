@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Feed: {% if object.title %}{{ object.title }}{% else %}{{ object.url }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="row">
+    <div class="col-sm-12">
+      <p>Get back to <a href="{{ object.get_absolute_url }}">{% if object.title %}{{ object.title }} - {% endif %}{{ object.url }}</a></p>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-sm-auto alert alert-danger">
+      <form method="post">{% csrf_token %}
+        <p>Are you sure you want to delete feed "{{ object.title }}"?</p>
+        <button class='btn btn-danger' type="submit">Confirm</button>
+      </form>
+    </div>
+  </div>
+
+
+</div>
+{% endblock content %}

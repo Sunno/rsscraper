@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.views.generic.detail import DetailView
+from django.urls import reverse
+from django.views.generic import DeleteView, DetailView
 
 from .models import Feed, FeedItem
 
@@ -13,6 +14,16 @@ class FeedDetailView(DetailView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+
+
+class FeedDeleteView(DeleteView):
+    model = Feed
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+    def get_success_url(self):
+        return reverse('users:detail')
 
 
 class FeedItemDetailView(DetailView):
