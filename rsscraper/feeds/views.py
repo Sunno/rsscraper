@@ -1,12 +1,13 @@
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.generic import DeleteView, DetailView, CreateView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Feed, FeedItem
 from .forms import FeedForm
 
 
-class FeedList(ListView):
+class FeedList(LoginRequiredMixin, ListView):
     model = Feed
     paginate_by = 10
 
@@ -14,7 +15,7 @@ class FeedList(ListView):
         return super().get_queryset().filter(user=self.request.user)
 
 
-class FeedAddView(CreateView):
+class FeedAddView(LoginRequiredMixin, CreateView):
     model = Feed
     form_class = FeedForm
 
@@ -27,7 +28,7 @@ class FeedAddView(CreateView):
         return reverse('feeds:detail', kwargs={'pk': self.object.pk})
 
 
-class FeedDetailView(DetailView):
+class FeedDetailView(LoginRequiredMixin, DetailView):
     model = Feed
     items_per_page = 10
 
@@ -44,17 +45,17 @@ class FeedDetailView(DetailView):
         return context
 
 
-class FeedDeleteView(DeleteView):
+class FeedDeleteView(LoginRequiredMixin, DeleteView):
     model = Feed
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
     def get_success_url(self):
-        return reverse('users:detail')
+        return reverse('home')
 
 
-class FeedItemDetailView(DetailView):
+class FeedItemDetailView(LoginRequiredMixin, DetailView):
     model = FeedItem
 
     def get_queryset(self):
