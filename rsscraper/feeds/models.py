@@ -53,9 +53,9 @@ class Feed(TimeStampedModel):
 
         for entry in parsed_feed.entries:
             try:
-                published = parsed_feed.feed.updated
+                published = entry.updated
             except AttributeError:
-                published = parsed_feed.feed.published
+                published = entry.published
 
             self.items.get_or_create(
                 permalink=entry.link,

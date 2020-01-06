@@ -35,7 +35,7 @@ class FeedDetailView(DetailView):
         return super().get_queryset().filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
-        items = self.get_object().items.all().order_by('-id', 'published')
+        items = self.get_object().items.all().order_by('-published', '-id')
         paginator = Paginator(items, self.items_per_page)
         items = paginator.get_page(self.request.GET.get('page', 1))
 
