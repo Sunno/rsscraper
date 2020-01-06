@@ -1,5 +1,5 @@
 import feedparser
-import datetime
+import dateparser
 
 from django.db import models
 from django.conf import settings
@@ -44,23 +44,27 @@ class Feed(TimeStampedModel):
         parsed_feed = self._cached_content or feedparser.parse(self.url)
         self.title = parsed_feed.feed.get('title', self.title)
         try:
-            updated = parsed_feed.feed.updated_parsed
+            updated = parsed_feed.feed.updated
         except AttributeError:
-            updated = parsed_feed.feed.published_parsed
-        self.last_updated = datetime.datetime(
-            *updated[:6]
-        )
+            updated = parsed_feed.feed.published
+        self.last_updated = dateparser.parse(updated)
 
         self.save()
 
         for entry in parsed_feed.entries:
+            try:
+                published = parsed_feed.feed.updated
+            except AttributeError:
+                published = parsed_feed.feed.published
+
             self.items.get_or_create(
                 permalink=entry.link,
                 defaults={
                     'title': entry.title,
                     'author': entry.author,
                     'summary': entry.summary,
-                    'content': entry.get('content', '')
+                    'content': entry.get('content', ''),
+                    'published': dateparser.parse(published)
                 }
             )
 
@@ -74,11 +78,13 @@ class Feed(TimeStampedModel):
 class FeedItem(TimeStampedModel):
     feed = models.ForeignKey(
         Feed, on_delete=models.CASCADE, related_name='items')
-    permalink = models.URLField(default=True, blank=True)
+    permalink = models.URLField(default=True, blank=True, db_index=True)
     title = models.CharField(max_length=256, default='', blank=True)
     author = models.CharField(max_length=256, default='', blank=True)
     summary = models.TextField(default='', blank=True)
     content = models.TextField(default='', blank=True)
+
+    published = models.DateTimeField(null=True, blank=True, db_index=True)
 
     favorite = models.BooleanField(default=False)
     read = models.BooleanField(default=False)

@@ -15,9 +15,29 @@
   <div class="row mt-3">
     <div class="col-sm-12">
       <ul class='list-group'>
-        {% for feed in object_list %}
+        {% for feed in page_obj %}
         <li class='list-group-item'><a href="{{ feed.get_absolute_url }}">{{ feed.title }}</a> (<a href="{{ feed.url }}">source</a>)</li>
         {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <div class="row mt-3">
+    <div class="col-sm-12">
+      <ul class="pagination">
+        <li class="page-item{% if not page_obj.has_previous %} disabled{% endif %}">
+          <a class="page-link" href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% for page in page_obj.paginator.page_range %}
+        <li class="page-item{% if page == page_obj.number %} active{% endif %}"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+        {% endfor %}
+        <li class="page-item{% if not page_obj.has_next %} disabled{% endif %}">
+          <a class="page-link" href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>

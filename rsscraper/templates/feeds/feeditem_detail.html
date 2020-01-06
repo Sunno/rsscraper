@@ -10,18 +10,30 @@
 
   <div class="row">
     <div class="col-sm-12">
-      <p>Get back to <a href="{{ object.feed.get_absolute_url }}">{% if object.feed.title %}{{ object.feed.title }} - {% endif %}{{ object.feed.url }}</a></p>
+      <p><a href="{{ object.feed.get_absolute_url }}">&laquo; Return to {% if object.feed.title %}{{ object.feed.title }} - {% endif %}{{ object.feed.url }}</a></p>
       <hr>
-      <h2><a href="{{ object.permalink }}">{% if object.title %}{{ object.title }} - {% endif %}{{ object.permalink }}</a></h2>
+      <h2><a href="{{ object.permalink }}" target="_blank">{% if object.title %}{{ object.title }} - {% endif %}{{ object.permalink }}</a></h2>
     </div>
   </div>
 
+  {% if object.content %}
   <div class="row mt-3">
     <div class="col-sm-12 border">
-      {{ object.content|safe }}
+        {{ object.content|safe }}
     </div>
   </div>
-
+  {% else %}
+  <div class="row mt-3">
+    <div class="col-sm-12 border">
+        {{ object.summary|safe }}
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-sm-12">
+      <a class="btn btn-primary" href="{{ object.permalink }}" target="_blank">See More</a>
+    </div>
+  </div>
+  {% endif %}
 
 </div>
 {% endblock content %}
