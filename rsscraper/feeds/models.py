@@ -21,14 +21,28 @@ class Feed(TimeStampedModel):
     last_fetch = models.DateTimeField(null=True, blank=True)
     last_updated = models.DateTimeField(null=True, blank=True)
 
+    _cached_content = None
+
+    @staticmethod
+    def validate_url(url):
+        """
+        This will be used to check if feed is available
+        returns: parsed feed, if feed is valid
+        """
+        parsed_feed = feedparser.parse(url)
+        return parsed_feed, not hasattr(parsed_feed, 'bozo_exception')
+
+    def set_content(self, parsed):
+        self._cached_content = parsed
+
     def fetch(self):
         """
         Updates all items in the feed
         """
         self.last_fetch = timezone.now()
 
-        parsed_feed = feedparser.parse(self.url)
-        self.title = parsed_feed.get('title', self.title)
+        parsed_feed = self._cached_content or feedparser.parse(self.url)
+        self.title = parsed_feed.feed.get('title', self.title)
         try:
             updated = parsed_feed.feed.updated_parsed
         except AttributeError:
@@ -46,7 +60,7 @@ class Feed(TimeStampedModel):
                     'title': entry.title,
                     'author': entry.author,
                     'summary': entry.summary,
-                    'content': entry.content
+                    'content': entry.get('content', '')
                 }
             )
 

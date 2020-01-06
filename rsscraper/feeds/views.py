@@ -1,12 +1,28 @@
-from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import DeleteView, DetailView
+from django.views.generic import DeleteView, DetailView, CreateView, ListView
 
 from .models import Feed, FeedItem
+from .forms import FeedForm
 
 
-def list(request):
-    return render(request, 'feeds/list.html')
+class FeedList(ListView):
+    model = Feed
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+
+class FeedAddView(CreateView):
+    model = Feed
+    form_class = FeedForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('feeds:detail', kwargs={'pk': self.object.pk})
 
 
 class FeedDetailView(DetailView):
