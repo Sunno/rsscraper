@@ -51,6 +51,8 @@ class Feed(TimeStampedModel):
 
         self.save()
 
+        main_author = parsed_feed.feed.get('author', self.title)
+
         for entry in parsed_feed.entries:
             try:
                 published = entry.updated
@@ -61,7 +63,7 @@ class Feed(TimeStampedModel):
                 permalink=entry.link,
                 defaults={
                     'title': entry.title,
-                    'author': entry.author,
+                    'author': entry.get('author', main_author),
                     'summary': entry.summary,
                     'content': entry.get('content', ''),
                     'published': dateparser.parse(published)
