@@ -10,10 +10,22 @@
 
   <div class="row">
     <div class="col-sm-12">
-      <p><a href="{{ object.feed.get_absolute_url }}">&laquo; Return to {% if object.feed.title %}{{ object.feed.title }} - {% endif %}{{ object.feed.url }}</a></p>
+      <p><a href="{{ object.feed.get_absolute_url }}{% if request.GET.return_page %}?page={{ request.GET.return_page }}{% endif %}">&laquo; Return to {% if object.feed.title %}{{ object.feed.title }} - {% endif %}{{ object.feed.url }}</a></p>
       <hr>
-      <h2><a href="{{ object.permalink }}" target="_blank">{% if object.title %}{{ object.title }} - {% endif %}{{ object.permalink }}</a></h2>
+      <h2>
+        {% if object.favorite %}
+          <a href="{% url 'feeds:unfavorite' pk=object.pk %}?redirect_to={% url 'feeds:item' pk=object.pk %}" class="btn btn-warning">*</a>
+        {% else %}
+          <a href="{% url 'feeds:favorite' pk=object.pk %}?redirect_to={% url 'feeds:item' pk=object.pk %}" class="btn btn-secondary">*</a>
+        {% endif %}
+        <a href="{{ object.permalink }}" target="_blank">{% if object.title %}{{ object.title }} - {% endif %}{{ object.permalink }}</a>
+      </h2>
     </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+    </div> 
   </div>
 
   {% if object.content %}

@@ -33,7 +33,13 @@ Feed: {% if object.title %}{{ object.title|lower|capfirst }}{% else %}{{ object.
       <ul class='list-group'>
         {% for item in items %}
         <li class="list-group-item">
-          <a href="{{ item.get_absolute_url }}" class="{% if not item.read %}text-primary{% else %}text-muted{% endif %}">{{ item.title|lower|capfirst }}</a>
+          {% if item.favorite %}
+            <a href="{% url 'feeds:unfavorite' pk=item.pk %}?redirect_to={% url 'feeds:detail' pk=object.pk %}{{ query_params }}" class="btn btn-warning">*</a>
+          {% else %}
+          <a href="{% url 'feeds:favorite' pk=item.pk %}?redirect_to={% url 'feeds:detail' pk=object.pk %}{{ query_params }}" class="btn btn-secondary">*</a>
+          {% endif %}
+
+          <a href="{{ item.get_absolute_url }}{% if request.GET.page %}?return_page={{ request.GET.page }}{% endif %}" class="{% if not item.read %}text-primary{% else %}text-muted{% endif %}">{{ item.title|lower|capfirst }}</a>
           (<a href="{{ item.permalink }}" class="text-info">source</a>)
           {% if item.published %}Published {{ item.published|date:'DATE_FORMAT' }}{% endif %}
         </li>

@@ -1,23 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Feeds{% endblock %}
+{% block title %}Favorite items{% endblock %}
 
 {% block content %}
 <div class="container">
-  <h2>Feeds</h2>
-  <div class="row">
-    <div class="col-sm-12">
-      <a class="btn btn-primary" href="{% url 'feeds:add' %}" role="button">Add</a>
-      <a class="btn btn-info" href="{% url 'feeds:favorite-list' %}" role="button">Favorite items</a>
-    </div> 
-  </div>
+  <h2>Favorite items</h2>
 
   <div class="row mt-3">
     <div class="col-sm-12">
       <ul class='list-group'>
-        {% for feed in page_obj %}
-        <li class='list-group-item'><a href="{{ feed.get_absolute_url }}">{% if feed.title %}{{ feed.title|lower|capfirst }}{% else %}{{ feed.url }}{% endif %}</a> (<a href="{{ feed.url }}" class="text-info">source</a>)</li>
+        {% for item in page_obj %}
+        <li class='list-group-item'>
+          {% if item.favorite %}
+            <a href="{% url 'feeds:unfavorite' pk=item.pk %}?redirect_to={% url 'feeds:favorite-list' %}" class="btn btn-warning">*</a>
+          {% else %}
+            <a href="{% url 'feeds:favorite' pk=item.pk %}?redirect_to={% url 'feeds:favorite-list' %}" class="btn btn-secondary">*</a>
+          {% endif %}
+          <a href="{{ item.get_absolute_url }}">{% if item.title %}{{ item.title|lower|capfirst }}{% else %}{{ item.permalink }}{% endif %}</a>
+          (<a href="{{ item.permalink }}" class="text-info">source</a>)
+        </li>
         {% endfor %}
       </ul>
     </div>

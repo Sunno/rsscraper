@@ -152,3 +152,33 @@ class TestFeedItemDetailView:
 
         assert response.status_code == 200
         assert FeedItem.objects.get(pk=item.pk).read
+
+
+def test_mark_as_favorite(user):
+    feed = FeedFactory(user=user)
+    item = feed.items.first()
+
+    client = Client()
+
+    client.force_login(user)
+
+    response = client.get(reverse('feeds:favorite', kwargs={'pk': item.pk}))
+
+    assert response.status_code == 302
+    assert FeedItem.objects.get(pk=item.pk).favorite
+
+
+def test_unmark_as_favorite(user):
+    feed = FeedFactory(user=user)
+    item = feed.items.first()
+    item.favorite = True
+    item.save()
+
+    client = Client()
+
+    client.force_login(user)
+
+    response = client.get(reverse('feeds:unfavorite', kwargs={'pk': item.pk}))
+
+    assert response.status_code == 302
+    assert not FeedItem.objects.get(pk=item.pk).favorite
