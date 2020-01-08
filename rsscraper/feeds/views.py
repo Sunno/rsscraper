@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 from .models import Feed, FeedItem
 from .forms import FeedForm
@@ -110,3 +111,25 @@ def mark_favorite(request, pk):
 @login_required
 def unmark_favorite(request, pk):
     return toggle_favorite(request, pk, False)
+
+
+@login_required
+def refresh_feed(request, pk):
+    feed = get_object_or_404(Feed, pk=pk, user=request.user)
+    parsed, valid = Feed.validate_url(feed.url)
+    if valid:
+        feed.set_content(parsed)
+        feed.fetch()
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            'Feed updated'
+        )
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'Error updating feed, try again later'
+        )
+
+    return HttpResponseRedirect(reverse('feeds:detail', kwargs={'pk': pk}))

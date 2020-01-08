@@ -22,7 +22,8 @@ Feed: {% if object.title %}{{ object.title|lower|capfirst }}{% else %}{{ object.
 <!-- Action buttons -->
   <div class="row">
     <div class="col-sm-12">
-      <a class="btn btn-danger" href="{% url "feeds:delete" pk=object.pk %}" role="button">Delete feed</a>
+      <a class="btn btn-primary" href="{% url "feeds:refresh" pk=object.pk %}" role="button">Refresh</a>
+      <a class="btn btn-danger" href="{% url "feeds:delete" pk=object.pk %}" role="button">Delete</a>
     </div>
   </div>
   <!-- End Action buttons -->
