@@ -60,3 +60,9 @@ class FeedItemDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return super().get_queryset().filter(feed__user=self.request.user)
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        obj.read = True
+        obj.save()
+        return obj

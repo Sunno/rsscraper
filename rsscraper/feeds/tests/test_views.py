@@ -4,7 +4,7 @@ from django.urls import reverse, resolve
 from django.test import RequestFactory, Client
 from django.http import Http404
 
-from rsscraper.feeds.models import Feed
+from rsscraper.feeds.models import Feed, FeedItem
 from rsscraper.feeds.views import FeedDetailView, FeedItemDetailView,\
     FeedDeleteView
 from rsscraper.feeds.tests.factories import FeedFactory
@@ -130,7 +130,10 @@ class TestFeedItemDetailView:
 
         view.request = request
 
-        assert view.get_object() == feed.items.all()[0]
+        # when object is gotten it's marked as read
+        obj = view.get_object()
+        assert obj == feed.items.all()[0]
+        assert obj.read
 
     def test_get_feed_detail(self, user: settings.AUTH_USER_MODEL):
         client = Client()
@@ -143,7 +146,9 @@ class TestFeedItemDetailView:
         assert response.status_code == 404
 
         feed = FeedFactory(user=user)
+        item = feed.items.all()[0]
         response = client.get(
-            reverse('feeds:item', kwargs={'pk': feed.items.all()[0].pk}))
+            reverse('feeds:item', kwargs={'pk': item.pk}))
 
         assert response.status_code == 200
+        assert FeedItem.objects.get(pk=item.pk).read

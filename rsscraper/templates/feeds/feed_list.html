@@ -16,7 +16,7 @@
     <div class="col-sm-12">
       <ul class='list-group'>
         {% for feed in page_obj %}
-        <li class='list-group-item'><a href="{{ feed.get_absolute_url }}">{{ feed.title }}</a> (<a href="{{ feed.url }}">source</a>)</li>
+        <li class='list-group-item'><a href="{{ feed.get_absolute_url }}">{% if feed.title %}{{ feed.title|lower|capfirst }}{% else %}{{ feed.url }}{% endif %}</a> (<a href="{{ feed.url }}" class="text-info">source</a>)</li>
         {% endfor %}
       </ul>
     </div>

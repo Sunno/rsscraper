@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Feed: {% if object.title %}{{ object.title }}{% else %}{{ object.url }}{% endif %}
+Feed: {% if object.title %}{{ object.title|lower|capfirst }}{% else %}{{ object.url }}{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@ Feed: {% if object.title %}{{ object.title }}{% else %}{{ object.url }}{% endif 
 
   <div class="row">
     <div class="col-sm-12">
-      <h2>{% if object.title %}{{ object.title }} - {% endif %}{{ object.url }}</h2>
+      <h2>{% if object.title %}{{ object.title|lower|capfirst }}{% else %}{{ object.url }}{% endif %}</h2>
     </div>
   </div>
 
@@ -32,10 +32,10 @@ Feed: {% if object.title %}{{ object.title }}{% else %}{{ object.url }}{% endif 
     <div class="col-sm-12">
       <ul class='list-group'>
         {% for item in items %}
-        <li class='list-group-item'>
-          <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
-          (<a href="{{ item.permalink }}">source</a>)
-          Published {{ item.published|date:'DATE_FORMAT' }}
+        <li class="list-group-item">
+          <a href="{{ item.get_absolute_url }}" class="{% if not item.read %}text-primary{% else %}text-muted{% endif %}">{{ item.title|lower|capfirst }}</a>
+          (<a href="{{ item.permalink }}" class="text-info">source</a>)
+          {% if item.published %}Published {{ item.published|date:'DATE_FORMAT' }}{% endif %}
         </li>
         {% endfor %}
       </ul>
