@@ -43,10 +43,9 @@ class Feed(TimeStampedModel):
 
         parsed_feed = self._cached_content or feedparser.parse(self.url)
         self.title = parsed_feed.feed.get('title', self.title)
-        try:
-            updated = parsed_feed.feed.updated
-        except AttributeError:
-            updated = parsed_feed.feed.published
+
+        updated = parsed_feed.feed.get('published', parsed_feed.feed.updated)
+
         self.last_updated = dateparser.parse(updated)
 
         self.save()
@@ -55,9 +54,9 @@ class Feed(TimeStampedModel):
 
         for entry in parsed_feed.entries:
             try:
-                published = entry.updated
-            except AttributeError:
                 published = entry.published
+            except AttributeError:
+                published = entry.updated
 
             self.items.get_or_create(
                 permalink=entry.link,
@@ -93,3 +92,6 @@ class FeedItem(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("feeds:item", kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return self.title

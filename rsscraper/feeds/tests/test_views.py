@@ -103,7 +103,7 @@ class TestFeedDeleteView:
         )
 
         assert response.status_code == 302
-        assert resolve(response.url).view_name == 'users:detail'
+        assert resolve(response.url).view_name == 'home'
         assert not Feed.objects.filter(pk=feed.pk).exists()
 
 
