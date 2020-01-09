@@ -35,6 +35,14 @@ Setting Up Your Users
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
+Running dev server locally
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+    pipenv shell "./manage.py runserver_plus 127.0.0.1:9000 --traceback"
+
+ (change 127.0.0.1:9000 for your preferred listening host and address)
+
 Type checks
 ^^^^^^^^^^^
 
@@ -60,14 +68,6 @@ Running tests with py.test
 
   $ pytest
 
-Live reloading and Sass CSS compilation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Moved to `Live reloading and SASS compilation`_.
-
-.. _`Live reloading and SASS compilation`: http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html
-
-
 
 Celery
 ^^^^^^
@@ -79,9 +79,18 @@ To run a celery worker:
 .. code-block:: bash
 
     cd rsscraper
-    celery -A config.celery_app worker -l info
+    pipenv run celery worker -A config.celery_app -l INFO
 
 Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
+
+
+To run periodic tasks you should run celerybeat
+
+.. code-block:: bash
+    pipenv run celery beat -A config.celery_app -l INFO
+
+
+ Also, to configure periodic tasks you must go to `periodic task` section in admin ie. `http://localhost:9000/admin/django_celery_beat/` (change localhost:9000 for your host and port)
 
 
 
