@@ -10,6 +10,7 @@ from django.contrib import messages
 
 from .models import Feed, FeedItem
 from .forms import FeedForm
+from .tasks import fetch_feeds
 
 
 class FeedList(LoginRequiredMixin, ListView):
@@ -116,20 +117,11 @@ def unmark_favorite(request, pk):
 @login_required
 def refresh_feed(request, pk):
     feed = get_object_or_404(Feed, pk=pk, user=request.user)
-    parsed, valid = Feed.validate_url(feed.url)
-    if valid:
-        feed.set_content(parsed)
-        feed.fetch()
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            'Feed updated'
-        )
-    else:
-        messages.add_message(
-            request,
-            messages.ERROR,
-            'Error updating feed, try again later'
-        )
+    fetch_feeds.delay([feed.id])
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        'Feed will be updated shortly'
+    )
 
     return HttpResponseRedirect(reverse('feeds:detail', kwargs={'pk': pk}))
