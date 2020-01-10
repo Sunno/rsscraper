@@ -121,4 +121,6 @@ Then run the image
 
     docker-compose -f <env>.yml up
 
+Note: Local environment doesn't need any further configuration for deployment
+
 For more information about running app with docker: https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
