@@ -1,3 +1,4 @@
+
 FROM python:3.7-alpine
 
 ENV PYTHONUNBUFFERED 1
@@ -13,13 +14,9 @@ RUN apk update \
   # Translations dependencies
   && apk add gettext \
   # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
-  && apk add postgresql-client
+  && apk add postgresql-client \
   # pipenv
   && pip install pipenv==2018.11.26
-
-# Requirements are installed here to ensure they will be cached.
-COPY ./requirements /requirements
-RUN pipenv install
 
 COPY ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
@@ -41,6 +38,11 @@ COPY ./compose/local/django/celery/flower/start /start-flower
 RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
 
+COPY . /app
 WORKDIR /app
+
+RUN pipenv install --dev
+RUN source `pipenv --venv`/bin/activate && pip install psycopg2==2.8.3
+RUN echo `pipenv --venv`/bin/activate
 
 ENTRYPOINT ["/entrypoint"]
