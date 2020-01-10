@@ -278,3 +278,4 @@ rsscraper/media/
 .envs/*
 !.envs/.local/
 sqlite.db
+dump.rdb
