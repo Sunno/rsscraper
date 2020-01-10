@@ -106,9 +106,16 @@ The following details how to deploy this application.
 Docker
 ^^^^^^
 
-See detailed `cookiecutter-django Docker documentation`_.
+In order to deploy using Docker compose you must build the image
 
-.. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
+<env> can be either `local` or `production`
 
+.. code-block:: bash
+    docker-compose -f <env>.yml build
 
+Then run the image
 
+.. code-block:: bash
+    docker-compose -f <env>.yml up
+
+For more information about running app with docker: https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html

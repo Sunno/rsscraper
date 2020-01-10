@@ -10,15 +10,13 @@ RUN apk update \
   # Pillow dependencies
   && apk add jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
   # CFFI dependencies
-  && apk add libffi-dev py-cffi
+  && apk add libffi-dev py-cffi \
+  # pipenv
+  && pip install pipenv==2018.11.26
 
 RUN addgroup -S django \
     && adduser -S -G django django
 
-# Requirements are installed here to ensure they will be cached.
-COPY ./requirements /requirements
-RUN pip install --no-cache-dir -r /requirements/production.txt \
-    && rm -rf /requirements
 
 COPY ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
@@ -49,5 +47,8 @@ RUN chown -R django /app
 USER django
 
 WORKDIR /app
+
+RUN pipenv install
+RUN source `pipenv --venv`/bin/activate && pip install -r requirements/production.txt
 
 ENTRYPOINT ["/entrypoint"]
