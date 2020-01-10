@@ -87,10 +87,11 @@ Please note: For Celery's import magic to work, it is important *where* the cele
 To run periodic tasks you should run celerybeat
 
 .. code-block:: bash
+
     pipenv run celery beat -A config.celery_app -l INFO
 
 
- Also, to configure periodic tasks you must go to `periodic task` section in admin ie. `http://localhost:9000/admin/django_celery_beat/` (change localhost:9000 for your host and port)
+Also, to configure periodic tasks you must go to `periodic task` section in admin ie. `http://localhost:9000/admin/django_celery_beat/` (change localhost:9000 for your host and port)
 
 
 
@@ -108,14 +109,16 @@ Docker
 
 In order to deploy using Docker compose you must build the image
 
-<env> can be either `local` or `production`
+(<env> can be either `local` or `production`)
 
 .. code-block:: bash
+
     docker-compose -f <env>.yml build
 
 Then run the image
 
 .. code-block:: bash
+
     docker-compose -f <env>.yml up
 
 For more information about running app with docker: https://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
